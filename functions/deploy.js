@@ -82,28 +82,36 @@ router.post('/android', uploadFile, async (req, res) => {
       is_force_update,
     } = req.body;
 
-    const selfLink = req.fileResponse[0].metadata.selfLink;
+    const link = req.fileResponse[0].metadata.selfLink;
 
-    if (!selfLink) {
+    if (!link) {
       throw new Error('Self link not generated.');
     }
 
     // Firebase DB doesn't allow "."
     const androidVersionRef = androidRef.child(version_code.split('.').join('-'));
-    androidVersionRef.update({
+    const updateData = {
       version_code,
       is_force_update,
-      link: selfLink,
-    });
+      link,
+    };
+
+    androidVersionRef.update(updateData);
 
     return res
       .status(200)
-      .send(true);
+      .send({
+        success: true,
+        ...updateData,
+      });
+
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .send(false);
+      .send({
+        success: false,
+      });
   }
 });
 
@@ -116,20 +124,28 @@ router.post('/ios', async (req, res) => {
     } = req.body;
 
     const iosVersionRef = androidRef.child(version_code.split('.').join('-'));
-    iosVersionRef.update({
+
+    const updateData = {
       version_code,
       is_force_update,
       link,
-    });
+    };
+
+    iosVersionRef.update(updateData);
 
     return res
       .status(200)
-      .send(true);
+      .send({
+        success: true,
+        ...updateData,
+      });
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .send();
+      .send({
+        success: false,
+      });
   }
 });
 
