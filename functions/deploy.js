@@ -20,6 +20,7 @@ admin.initializeApp({
 const storage = admin.storage().bucket(storageBucket);
 const db = admin.database();
 const androidRef = db.ref('android_version');
+const iosRef = db.ref('ios_version');
 
 const uploadFile = (req, res, next) => {
   // Store APK in Firebase Storage
@@ -123,7 +124,7 @@ router.post('/ios', async (req, res) => {
       link,
     } = req.body;
 
-    const iosVersionRef = androidRef.child(version_code.split('.').join('-'));
+    const iosVersionRef = iosRef.child(version_code.split('.').join('-'));
 
     const updateData = {
       version_code,
