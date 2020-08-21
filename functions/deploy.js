@@ -11,7 +11,6 @@ const router = express.Router();
 const databaseURL = firebaseConfig().databaseURL;
 const storageBucket = firebaseConfig().storageBucket;
 
-
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL,
@@ -93,7 +92,7 @@ router.post('/android', uploadFile, async (req, res) => {
     const androidVersionRef = androidRef.child(version_code.split('.').join('-'));
     androidVersionRef.update({
       version_code,
-      is_force_update: req.body.is_force_update,
+      is_force_update,
       link: selfLink,
     });
 
@@ -110,9 +109,22 @@ router.post('/android', uploadFile, async (req, res) => {
 
 router.post('/ios', async (req, res) => {
   try {
+    const {
+      version_code,
+      is_force_update,
+      link,
+    } = req.body;
+
+    const iosVersionRef = androidRef.child(version_code.split('.').join('-'));
+    iosVersionRef.update({
+      version_code,
+      is_force_update,
+      link,
+    });
+
     return res
       .status(200)
-      .send('OK');
+      .send(true);
   } catch (error) {
     console.error(error);
     return res
