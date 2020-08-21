@@ -97,15 +97,13 @@ router.post('/android', uploadFile, async (req, res) => {
       link,
     };
 
-    androidVersionRef.update(updateData);
+
+    await androidVersionRef.update(updateData);
+    updateData.success = true;
 
     return res
       .status(200)
-      .send({
-        success: true,
-        ...updateData,
-      });
-
+      .send(updateData);
   } catch (error) {
     console.error(error);
     return res
@@ -132,14 +130,12 @@ router.post('/ios', async (req, res) => {
       link,
     };
 
-    iosVersionRef.update(updateData);
+    await iosVersionRef.update(updateData);
+    updateData.success = true;
 
     return res
       .status(200)
-      .send({
-        success: true,
-        ...updateData,
-      });
+      .send(updateData);
   } catch (error) {
     console.error(error);
     return res
