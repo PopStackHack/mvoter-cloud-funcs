@@ -4,7 +4,7 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 const Busboy = require('busboy');
-const serviceAccount = require('../serviceAccount.json');
+const serviceAccount = require('./serviceAccount.json');
 const { firebaseConfig } = require('firebase-functions');
 const router = express.Router();
 
