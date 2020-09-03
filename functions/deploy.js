@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const moment = require('moment');
 const express = require('express');
 const path = require('path');
 const os = require('os');
@@ -10,12 +11,6 @@ const router = express.Router();
 
 const databaseURL = firebaseConfig().databaseURL;
 const storageBucket = firebaseConfig().storageBucket;
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL,
-  storageBucket,
-});
 
 const storage = admin.storage().bucket(storageBucket);
 const db = admin.database();
@@ -80,9 +75,11 @@ router.post('/android', uploadFile, async (req, res) => {
   try {
     const {
       version_code,
+      playstore_link = '',
       is_force_update,
     } = req.body;
 
+    const isForceUpdate = is_force_update === 'true' ? 1 : 0;
     const link = req.fileResponse[0].metadata.selfLink;
 
     if (!link) {
@@ -93,10 +90,11 @@ router.post('/android', uploadFile, async (req, res) => {
     const androidVersionRef = androidRef.child(version_code.split('.').join('-'));
     const updateData = {
       version_code,
-      is_force_update,
+      is_force_update: isForceUpdate,
       link,
+      playstore_link,
+      timestamp: moment().unix(),
     };
-
 
     await androidVersionRef.update(updateData);
     updateData.success = true;
@@ -128,6 +126,7 @@ router.post('/ios', async (req, res) => {
       version_code,
       is_force_update,
       link,
+      timestamp: moment().unix(),
     };
 
     await iosVersionRef.update(updateData);
