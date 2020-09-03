@@ -97,12 +97,14 @@ router.post('/android', uploadFile, async (req, res) => {
     };
 
     await androidVersionRef.update(updateData);
-    updateData.success = true;
     updateData.is_force_update = isForceUpdate === 1 ? true : false;
 
     return res
       .status(200)
-      .send(updateData);
+      .send({
+        success: true,
+        data: updateData,
+      });
   } catch (error) {
     console.error(error);
     return res
@@ -132,7 +134,6 @@ router.post('/ios', async (req, res) => {
     };
 
     await iosVersionRef.update(updateData);
-    updateData.success = true;
     // Change true false bool again lol
     updateData.is_force_update = isForceUpdate === 1 ? true : false;
 
@@ -140,9 +141,7 @@ router.post('/ios', async (req, res) => {
       .status(200)
       .send({
         success: true,
-        data: {
-          ...updateData,
-        },
+        data: updateData,
       });
   } catch (error) {
     console.error(error);

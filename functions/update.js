@@ -45,9 +45,9 @@ router.post('/android', async (req, res) => {
 
     const latestUpdate = getLatestUpdate(versionCode, result);
 
-    res.send({
+    return res.send({
       success: true,
-      data: { ...latestUpdate },
+      data: latestUpdate,
     });
   } catch (error) {
     console.error(error);
@@ -71,12 +71,17 @@ router.post('/ios', async (req, res) => {
 
     const latestUpdate = getLatestUpdate(versionCode, result);
 
-    res.send({
+    return res.send({
       success: true,
-      data: { ...latestUpdate },
+      data: latestUpdate,
     });
   } catch (error) {
     console.error(error);
+    return res
+      .status(500)
+      .send({
+        success: false,
+      });
   }
 });
 
