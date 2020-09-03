@@ -13,7 +13,7 @@ admin.initializeApp({
 });
 
 const deploy = require('./deploy');
-// const update = require('./update');
+const update = require('./update');
 
 exports.deploy = functions.https.onRequest(deploy);
-// exports.update = functions.https.onRequest(update);
+exports.update = functions.https.onRequest(update);
