@@ -17,7 +17,7 @@ function getLatestUpdate(versionCode, result) {
     // Compare with latest update
     const latestUpdate = resultEntries[resultEntries.length - 1];
     const containsForceUpdate = resultEntries
-      .reverse()
+      .slice(foundVersionCodeIndex, resultEntries.length)
       .findIndex(([, info]) => info.is_force_update === 1) > -1;
 
       if (containsForceUpdate) {
@@ -39,11 +39,10 @@ router.post('/android', async (req, res) => {
       version_code,
     } = req.body;
 
-    const versionCode = version_code.split('.').join('-');
     const snapshot = await db.ref(`android_version`).orderByChild('timestamp').once('value');
     const result = snapshot.val();
 
-    const latestUpdate = getLatestUpdate(versionCode, result);
+    const latestUpdate = getLatestUpdate(version_code, result);
 
     return res.send({
       success: true,
@@ -65,11 +64,10 @@ router.post('/ios', async (req, res) => {
       version_code,
     } = req.body;
 
-    const versionCode = version_code.split('.').join('-');
     const snapshot = await db.ref(`ios_version`).orderByChild('timestamp').once('value');
     const result = snapshot.val();
 
-    const latestUpdate = getLatestUpdate(versionCode, result);
+    const latestUpdate = getLatestUpdate(version_code, result);
 
     return res.send({
       success: true,

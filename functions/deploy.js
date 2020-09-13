@@ -87,9 +87,9 @@ router.post('/android', uploadFile, async (req, res) => {
     }
 
     // Firebase DB doesn't allow "."
-    const androidVersionRef = androidRef.child(version_code.split('.').join('-'));
+    const androidVersionRef = androidRef.child(version_code);
     const updateData = {
-      version_code,
+      version_code: parseInt(version_code),
       is_force_update: isForceUpdate,
       link,
       playstore_link,
@@ -123,11 +123,11 @@ router.post('/ios', async (req, res) => {
       link,
     } = req.body;
 
-    const iosVersionRef = iosRef.child(version_code.split('.').join('-'));
+    const iosVersionRef = iosRef.child(version_code);
     const isForceUpdate = is_force_update === 'true' ? 1 : 0;
 
     const updateData = {
-      version_code,
+      version_code: parseInt(version_code),
       is_force_update: isForceUpdate,
       link,
       timestamp: moment().unix(),
