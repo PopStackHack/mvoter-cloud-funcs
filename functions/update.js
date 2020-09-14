@@ -11,26 +11,25 @@ const db = admin.database();
 function getLatestUpdate(versionCode, result) {
   // Check for version ranges in which the version code falls upon
   const resultEntries = Object.entries(result);
-  const foundVersionCodeIndex = resultEntries.findIndex(([key]) => key === versionCode);
+  const foundVersionCodeIndex = resultEntries.findIndex(([key]) => Number(key) > Number(versionCode));
+  const latestUpdate = resultEntries[resultEntries.length - 1];
 
   if (foundVersionCodeIndex > -1) { // version code exists
     // Compare with latest update
-    const latestUpdate = resultEntries[resultEntries.length - 1];
-    const containsForceUpdate = resultEntries
+    const containsForceUpdateBetweenRange = resultEntries
       .slice(foundVersionCodeIndex, resultEntries.length)
       .findIndex(([, info]) => info.is_force_update === 1) > -1;
 
-      if (containsForceUpdate) {
-        latestUpdate[1].should_update = true;
+      if (containsForceUpdateBetweenRange) {
+        latestUpdate[1].is_force_update = true;
       } else {
-        latestUpdate[1].should_update = false;
+        latestUpdate[1].is_force_update = false;
       }
-
-    latestUpdate[1].is_force_update = latestUpdate[1].is_force_update === 1 ? true : false;
-    return latestUpdate[1];
   } else {
-    throw new Error('Version code not found.');
+    latestUpdate[1].is_force_update = latestUpdate[1].is_force_update === 0 ? false : true;
   }
+
+  return latestUpdate[1];
 }
 
 router.post('/android', async (req, res) => {
