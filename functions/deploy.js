@@ -71,7 +71,20 @@ const uploadFile = (req, res, next) => {
   busboy.end(req.rawBody);
 }
 
-router.post('/android', uploadFile, async (req, res) => {
+const checkSecret = (req, res, next) => {
+  const hash = 'e7c4c7d25a7bf2fa5fd049e5229ca69a';
+
+  if (req.headers['secret-key'] === hash) {
+    return next();
+  }
+
+  return res.status(500).send({
+    success: false,
+    message: 'Wrong secret key.',
+  })
+}
+
+router.post('/android', checkSecret, uploadFile, async (req, res) => {
   try {
     const {
       version_code,
@@ -115,7 +128,7 @@ router.post('/android', uploadFile, async (req, res) => {
   }
 });
 
-router.post('/ios', async (req, res) => {
+router.post('/ios', checkSecret, async (req, res) => {
   try {
     const {
       version_code,
