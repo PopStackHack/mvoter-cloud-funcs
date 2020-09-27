@@ -29,8 +29,8 @@ function getLatestUpdate(versionCode, result) {
     latestUpdate[1].is_force_update = latestUpdate[1].is_force_update === 0 ? false : true;
   }
 
-  latestUpdate[1].link = 'https://mvoterapp.com/apk';
-  latestUpdate[1].playstore_link = 'https://mvoterapp.com/android';
+  latestUpdate[1].link = 'https://mvoterapp.com/apk?ref=app';
+  latestUpdate[1].playstore_link = 'https://mvoterapp.com/android?ref=app';
 
   return latestUpdate[1];
 }
