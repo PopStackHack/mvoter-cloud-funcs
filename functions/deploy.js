@@ -6,6 +6,7 @@ const os = require('os');
 const fs = require('fs');
 const Busboy = require('busboy');
 const serviceAccount = require('./serviceAccount.json');
+const keys = require('./keys.json');
 const { firebaseConfig } = require('firebase-functions');
 const router = express.Router();
 
@@ -16,6 +17,7 @@ const storage = admin.storage().bucket(storageBucket);
 const db = admin.database();
 const androidRef = db.ref('android_version');
 const iosRef = db.ref('ios_version');
+const hash = keys.hash;
 
 const uploadFile = (req, res, next) => {
   // Store APK in Firebase Storage
@@ -72,8 +74,6 @@ const uploadFile = (req, res, next) => {
 }
 
 const checkSecret = (req, res, next) => {
-  const hash = 'e7c4c7d25a7bf2fa5fd049e5229ca69a';
-
   if (req.headers['secret-key'] === hash) {
     return next();
   }
